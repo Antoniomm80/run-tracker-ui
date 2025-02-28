@@ -1,6 +1,6 @@
-import { Container, ScrollArea } from "@mantine/core";
-import { TimeProps } from "../domain/time";
-import { TimeListItem } from "./timelistitem";
+import {Container, ScrollArea} from "@mantine/core";
+import {TimeProps} from "../domain/time";
+import {TimeListItem} from "./timelistitem";
 
 type TimeListProps = {
     times: TimeProps[];
@@ -9,11 +9,11 @@ type TimeListProps = {
 
 export function TimeList(props: TimeListProps) {
     return (
-        <Container fluid>
+        <Container px={0}>
             <ScrollArea h={250}>
-            {props.times.map((time) => (
-                <TimeListItem key={`tli-${time.id}`} time={time} distance={props.distance} />
-            ))}
+                {props.times.map((time) => (
+                    <TimeListItem key={`tli-${time.id}`} time={time} distance={props.distance}/>
+                ))}
             </ScrollArea>
         </Container>
     );

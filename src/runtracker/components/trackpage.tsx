@@ -37,7 +37,7 @@ export function TrackPage(props: TrackPageProps) {
         onSuccess: (savedTime) => {
             const currentPath: Track = queryclient.getQueryData(["track", trackId]) as Track;
             currentPath.times?.push(Time.of(savedTime));
-            queryclient.setQueryData(["path", trackId], {...currentPath});
+            queryclient.setQueryData(["track", trackId], {...currentPath});
             //toastContext.showSuccessMessage(translate("newTime.saveSuccess"));
             notifications.show({
                 withCloseButton: true,
@@ -67,14 +67,14 @@ export function TrackPage(props: TrackPageProps) {
             close();
         },
     });
-
+    const currentDateISO = new Date().toISOString().split('T')[0];
     const {
         register,
         formState: {errors, isDirty, isValid},
         handleSubmit,
         setValue,
         trigger,
-    } = useForm<NewTimeFormValues>({mode: "onBlur"});
+    } = useForm<NewTimeFormValues>({mode: "onBlur", defaultValues: {trainingDate: currentDateISO, durationString: ""}});
     const useStyles = createStyles((theme) => ({
         card: {
             position: "relative",
@@ -154,7 +154,7 @@ export function TrackPage(props: TrackPageProps) {
                     <LoadingOverlay visible={visible} overlayBlur={2}/>
                     <TextInput
                         label={translate("newTime.trainingDate")}
-                        placeholder="mm:ss"
+                        placeholder="Fecha del entrenamiento"
                         icon={<IconCalendar size="0.8rem"/>}
                         type="date"
                         {...register("trainingDate", {required: true, onBlur: handleChange})}

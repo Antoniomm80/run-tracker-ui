@@ -42,10 +42,10 @@ export function TrackCard(props: TrackCardProps) {
     const buildBest = () => {
         if (props.bestTime) {
             return (
-                <h2>
-                    <span>{`${timeUtils.printTime(props.bestTime.duration)}`} </span>
-                    <span>{`${timeUtils.formatDate(props.bestTime.trainingDate)}`}</span>
-                </h2>
+                <>
+                    <p><strong>Duración: </strong>{`${timeUtils.printTime(props.bestTime.duration)}`} </p>
+                    <p><strong>Fecha: </strong>{`${timeUtils.formatDate(props.bestTime.trainingDate)}`}</p>
+                </>
             );
         }
         return <></>;
@@ -63,10 +63,10 @@ export function TrackCard(props: TrackCardProps) {
                 <IconRun size="2rem" stroke={1.5}/>
             </ThemeIcon>
             <Space h="lg"/>
-            <Text ta="center" fw={700} className={classes.title}>
+            <Text ta="left" fw={700} className={classes.title} mb={20}>
                 {props.track.name}
             </Text>
-            <Text c="dimmed" ta="left" lineClamp={2}>
+            <Text c="dimmed" ta="left" lineClamp={3} px={0}>
                 {props.track.description}
             </Text>
 
