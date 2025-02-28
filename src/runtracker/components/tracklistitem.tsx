@@ -33,6 +33,15 @@ const TimeRefDecorator: React.FC<TimeRefDecoratorProps> = (props) => {
     );
 };
 
+function CardElement(props: { icon: React.ReactNode, text: string, active: boolean }) {
+    return <Flex direction="row" gap={2} align="">
+        {props.icon}
+        <Text c={props.active ? "gray.0" : "dimmed"}>
+            {props.text}
+        </Text>
+    </Flex>
+}
+
 interface TrackListItemProps {
     track: TrackSummary;
     navigation: boolean | undefined;
@@ -69,20 +78,15 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({track}) => {
                     <Title order={active ? 5 : 6}>{track.name}</Title>
                     <Space h={"xs"}/>
                     <Flex justify="flex-start" align="center" direction="row" wrap="wrap" gap={"xs"} rowGap="xs">
-                        <IconRun size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.orange[7]}/>
-                        <Text c={active ? "gray.0" : "dimmed"}>
-                            {prepareDistanceText(track)}
-                        </Text>
-                        <IconTrophy size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.yellow[4]}/>
-                        <Text c={active ? "gray.0" : "dimmed"}>
-                            {prepareTimeText(track)}
-                        </Text>
-                        <IconCalendar size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.red[9]}/>
-                        <Text c={active ? "gray.0" : "dimmed"}>
-                            {prepareDateText(track)}
-                        </Text>
+                        <CardElement icon={<IconRun size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.orange[7]}/>}
+                                     text={prepareDistanceText(track)} active={active}/>
+                        <CardElement icon={<IconTrophy size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.yellow[4]}/>}
+                                     text={prepareTimeText(track)} active={active}/>
+                        <CardElement icon={<IconCalendar size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.red[9]}/>}
+                                     text={prepareDateText(track)} active={active}/>
                     </Flex>
                 </Grid.Col>
+                <Space h={"xs"}/>
                 <Grid.Col span={1}>
                     <TimeRefDecorator track={track}/>
                 </Grid.Col>
