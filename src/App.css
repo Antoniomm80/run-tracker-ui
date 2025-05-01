@@ -17,4 +17,8 @@
     footer {
         margin-bottom: env(safe-area-inset-bottom);
     }
+
+    input, textarea {
+        font-size: 16px;
+    }
 }
