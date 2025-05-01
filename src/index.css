@@ -1,12 +1,11 @@
 nav {
-    padding: 0 !important;
 
-     .mantine-Paper-root {
+    .mantine-Paper-root {
         border-left: 0px !important;
         border-right: 0px !important;
-         border-top: 0px !important;
-         margin-top: 0px !important;
-         border-radius: 0;
+        border-top: 0px !important;
+        margin-top: 0px !important;
+        border-radius: 0;
 
     }
 }
