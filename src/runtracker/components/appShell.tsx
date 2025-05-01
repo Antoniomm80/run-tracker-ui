@@ -117,17 +117,26 @@ export default function RunTrackerAppShell() {
                 asideOffsetBreakpoint="sm"
                 navbar={
                     <Navbar p="md" hiddenBreakpoint="sm" width={{md: 300, lg: 400}} hidden={true}>
-                        <Navbar.Section mt="xs">
-                            <Group spacing="xs" position="center">
-                                <Badge variant="filled" onClick={open} size="lg" leftSection={leftPlus}>
-                                    {translate("newPath.action")}
-                                </Badge>
-                            </Group>
-                        </Navbar.Section>
-                        <Divider my="sm"/>
-                        <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-                            <TrackList tracks={tracks} navigation/>
-                        </Navbar.Section>
+                        <Box
+                            sx={{
+                                paddingTop: 'env(safe-area-inset-top)',
+                                paddingBottom: 'env(safe-area-inset-bottom)',
+                                paddingLeft: 'env(safe-area-inset-left)',
+                                paddingRight: 'env(safe-area-inset-right)',
+                            }}
+                        >
+                            <Navbar.Section mt="xs">
+                                <Group spacing="xs" position="center">
+                                    <Badge variant="filled" onClick={open} size="lg" leftSection={leftPlus}>
+                                        {translate("newPath.action")}
+                                    </Badge>
+                                </Group>
+                            </Navbar.Section>
+                            <Divider my="sm"/>
+                            <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
+                                <TrackList tracks={tracks} navigation/>
+                            </Navbar.Section>
+                        </Box>
                     </Navbar>
                 }
                 footer={
