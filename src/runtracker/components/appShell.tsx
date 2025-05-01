@@ -2,7 +2,6 @@ import {
     ActionIcon,
     AppShell,
     Badge,
-    Box,
     Button,
     Divider,
     Footer,
@@ -99,14 +98,7 @@ export default function RunTrackerAppShell() {
     );
 
     return (
-        <Box
-            sx={{
-                paddingTop: 'env(safe-area-inset-top)',
-                paddingBottom: 'env(safe-area-inset-bottom)',
-                paddingLeft: 'env(safe-area-inset-left)',
-                paddingRight: 'env(safe-area-inset-right)',
-            }}
-        >
+        <>
             <AppShell
                 styles={{
                     main: {
@@ -116,29 +108,21 @@ export default function RunTrackerAppShell() {
                 navbarOffsetBreakpoint="sm"
                 asideOffsetBreakpoint="sm"
                 navbar={
-                    <Box
-                        sx={{
-                            paddingTop: 'env(safe-area-inset-top)',
-                            paddingBottom: 'env(safe-area-inset-bottom)',
-                            paddingLeft: 'env(safe-area-inset-left)',
-                            paddingRight: 'env(safe-area-inset-right)',
-                        }}
-                    >
-                        <Navbar p="md" hiddenBreakpoint="sm" width={{md: 300, lg: 400}} hidden={true}>
+                    <Navbar p="md" hiddenBreakpoint="sm" width={{md: 300, lg: 400}} hidden={true}>
 
-                            <Navbar.Section mt="xs">
-                                <Group spacing="xs" position="center">
-                                    <Badge variant="filled" onClick={open} size="lg" leftSection={leftPlus}>
-                                        {translate("newPath.action")}
-                                    </Badge>
-                                </Group>
-                            </Navbar.Section>
-                            <Divider my="sm"/>
-                            <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-                                <TrackList tracks={tracks} navigation/>
-                            </Navbar.Section>
-                        </Navbar>
-                    </Box>
+                        <Navbar.Section mt="xs">
+                            <Group spacing="xs" position="center">
+                                <Badge variant="filled" onClick={open} size="lg" leftSection={leftPlus}>
+                                    {translate("newPath.action")}
+                                </Badge>
+                            </Group>
+                        </Navbar.Section>
+                        <Divider my="sm"/>
+                        <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
+                            <TrackList tracks={tracks} navigation/>
+                        </Navbar.Section>
+                    </Navbar>
+
                 }
                 footer={
                     <Footer height={60}>
@@ -206,6 +190,6 @@ export default function RunTrackerAppShell() {
                     </Group>
                 </form>
             </Modal>
-        </Box>
+        </>
     );
 }

@@ -116,7 +116,7 @@ export function TrackPage(props: TrackPageProps) {
             <Space h="lg"/>
             <MediaQuery smallerThan="md" styles={{display: "none"}}>
                 <Container fluid>
-                    <Paper radius="md" withBorder className={classes.card}>
+                    <Paper radius="lg" withBorder className={classes.card} p={"1.1rem"}>
                         <TimeList times={track.times || []} distance={track.distance}/>
                     </Paper>
                     <Space h="lg"/>

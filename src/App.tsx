@@ -8,6 +8,7 @@ import {TrackSummary} from "./runtracker/domain/tracksummary";
 import {RunTrackerState} from "./runtracker/domain/runtrackerstate";
 import {useState} from "react";
 import {Notifications} from "@mantine/notifications";
+import "./App.css";
 
 export const useRunTrackerStore = create<RunTrackerState>()((set, get) => ({
     tracksSummary: [],
@@ -40,7 +41,9 @@ export default function App() {
             <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
                 <Notifications/>
                 <QueryClientProvider client={queryClient}>
-                    <RunTrackerAppShell/>
+                    <div className="main-container">
+                        <RunTrackerAppShell/>
+                    </div>
                     <ReactQueryDevtools initialIsOpen={false}/>
                 </QueryClientProvider>
             </MantineProvider>
