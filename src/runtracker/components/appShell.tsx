@@ -2,6 +2,7 @@ import {
     ActionIcon,
     AppShell,
     Badge,
+    Box,
     Button,
     Divider,
     Footer,
@@ -98,7 +99,14 @@ export default function RunTrackerAppShell() {
     );
 
     return (
-        <>
+        <Box
+            sx={{
+                paddingTop: 'env(safe-area-inset-top)',
+                paddingBottom: 'env(safe-area-inset-bottom)',
+                paddingLeft: 'env(safe-area-inset-left)',
+                paddingRight: 'env(safe-area-inset-right)',
+            }}
+        >
             <AppShell
                 styles={{
                     main: {
@@ -188,6 +196,6 @@ export default function RunTrackerAppShell() {
                     </Group>
                 </form>
             </Modal>
-        </>
+        </Box>
     );
 }
