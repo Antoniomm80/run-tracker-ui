@@ -1,0 +1,6 @@
+.track-list-page {
+    height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--mantine-header-height));
+    margin-top: calc(0px + var(--mantine-header-height));
+    overflow: hidden;
+    width: 100%;
+}

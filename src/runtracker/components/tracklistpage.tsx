@@ -3,6 +3,7 @@ import {NewTrackFab} from "./newTrackFab";
 import {TrackList} from "./tracksList";
 import {useMediaQuery} from "@mantine/hooks";
 import {ScrollArea} from "@mantine/core";
+import "./tracklistpage.css";
 
 export function TrackListPage() {
     const tracksSummary = useRunTrackerStore((state) => state.tracksSummary);
@@ -10,7 +11,7 @@ export function TrackListPage() {
     const isMobile = useMediaQuery('(max-width: 48em)');
     return (
         <>
-            <ScrollArea h={"100%"} w={"100%"} sx={{overflow: "hidden"}}>
+            <ScrollArea className="track-list-page">
                 <TrackList tracks={tracksSummary}/>
             </ScrollArea>
             {isMobile && <NewTrackFab open={open}/>}

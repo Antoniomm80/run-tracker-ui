@@ -1,5 +1,5 @@
 .main-container {
-    
+
     header {
         margin-top: env(safe-area-inset-top);
         padding-top: 0.5rem !important;
