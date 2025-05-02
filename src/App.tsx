@@ -38,16 +38,7 @@ export default function App() {
 
     return (
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-            <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS styles={{
-                global: () => ({
-                    body: {
-                        overflow: 'hidden',
-                        position: 'fixed',
-                        width: '100%',
-                        height: '100dvh',
-                    },
-                }),
-            }}>
+            <MantineProvider theme={{colorScheme}} withGlobalStyles withNormalizeCSS>
                 <Notifications/>
                 <QueryClientProvider client={queryClient}>
                     <div className="main-container">
