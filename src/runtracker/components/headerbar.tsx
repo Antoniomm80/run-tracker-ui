@@ -16,7 +16,7 @@ export function HeaderBar() {
             {shouldRenderBackButton && <ActionIcon color="blue" size="lg" variant="transparent" onClick={handleOnClick}>
                 <IconChevronLeft size="1.1rem"/>
             </ActionIcon>}
-            <Text>Run-tracker</Text>
+            <Text>Run tracker</Text>
             <ActionIcon
                 variant="outline"
                 color={dark ? "yellow" : "blue"}
