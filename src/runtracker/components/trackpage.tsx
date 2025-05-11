@@ -1,4 +1,4 @@
-import {Button, Container, createStyles, Group, LoadingOverlay, MediaQuery, Modal, Paper, Space, Tabs, TextInput,} from "@mantine/core";
+import {Button, Container, createStyles, Group, LoadingOverlay, MediaQuery, Modal, Paper, ScrollArea, Space, Tabs, TextInput,} from "@mantine/core";
 import {Time, TimeProps} from "../domain/time";
 import {Track, TrackProps} from "../domain/track";
 import {TrackCard} from "./trackcard";
@@ -110,45 +110,47 @@ export function TrackPage(props: TrackPageProps) {
 
     return (
         <>
-            <Container fluid>
-                <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={open}/>
-            </Container>
-            <Space h="lg"/>
-            <MediaQuery smallerThan="md" styles={{display: "none"}}>
+            <ScrollArea className="track-page">
                 <Container fluid>
-                    <Paper radius="lg" withBorder className={classes.card} p={"1.1rem"}>
-                        <TimeList times={track.times || []} distance={track.distance}/>
-                    </Paper>
-                    <Space h="lg"/>
-                    <Paper radius="md" withBorder className={classes.card}>
-                        <TrackTimesGraph times={track.times || []}/>
-                    </Paper>
+                    <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={open}/>
                 </Container>
-            </MediaQuery>
-            <MediaQuery largerThan="sm" styles={{display: "none"}}>
-                <Container fluid>
-                    <Paper radius="md" withBorder className={classes.card}>
-                        <Tabs defaultValue="times">
-                            <Tabs.List>
-                                <Tabs.Tab value="times" icon={<IconPhoto size="1.1rem"/>}>
-                                    {translate("labels.times")}
-                                </Tabs.Tab>
-                                <Tabs.Tab value="graph" icon={<IconMessageCircle size="1.1rem"/>}>
-                                    {translate("labels.graph")}
-                                </Tabs.Tab>
-                            </Tabs.List>
+                <Space h="lg"/>
+                <MediaQuery smallerThan="md" styles={{display: "none"}}>
+                    <Container fluid>
+                        <Paper radius="lg" withBorder className={classes.card} p={"1.1rem"}>
+                            <TimeList times={track.times || []} distance={track.distance}/>
+                        </Paper>
+                        <Space h="lg"/>
+                        <Paper radius="md" withBorder className={classes.card}>
+                            <TrackTimesGraph times={track.times || []}/>
+                        </Paper>
+                    </Container>
+                </MediaQuery>
+                <MediaQuery largerThan="sm" styles={{display: "none"}}>
+                    <Container fluid>
+                        <Paper radius="md" withBorder className={classes.card}>
+                            <Tabs defaultValue="times">
+                                <Tabs.List>
+                                    <Tabs.Tab value="times" icon={<IconPhoto size="1.1rem"/>}>
+                                        {translate("labels.times")}
+                                    </Tabs.Tab>
+                                    <Tabs.Tab value="graph" icon={<IconMessageCircle size="1.1rem"/>}>
+                                        {translate("labels.graph")}
+                                    </Tabs.Tab>
+                                </Tabs.List>
 
-                            <Tabs.Panel value="times" pt="xs">
-                                <TimeList times={track.times || []} distance={track.distance}/>
-                            </Tabs.Panel>
+                                <Tabs.Panel value="times" pt="xs">
+                                    <TimeList times={track.times || []} distance={track.distance}/>
+                                </Tabs.Panel>
 
-                            <Tabs.Panel value="graph" pt="xs">
-                                <TrackTimesGraph times={track.times || []}/>
-                            </Tabs.Panel>
-                        </Tabs>
-                    </Paper>
-                </Container>
-            </MediaQuery>
+                                <Tabs.Panel value="graph" pt="xs">
+                                    <TrackTimesGraph times={track.times || []}/>
+                                </Tabs.Panel>
+                            </Tabs>
+                        </Paper>
+                    </Container>
+                </MediaQuery>
+            </ScrollArea>
             <Modal opened={opened} onClose={close} size="md" title={translate("newTime.title")} centered>
                 <form onSubmit={onSubmit}>
                     <LoadingOverlay visible={visible} overlayBlur={2}/>
