@@ -38,6 +38,8 @@ export function TrackPage(props: TrackPageProps) {
             const currentPath: Track = queryclient.getQueryData(["track", trackId]) as Track;
             currentPath.times?.push(Time.of(savedTime));
             queryclient.setQueryData(["track", trackId], {...currentPath});
+            queryclient.invalidateQueries(["paths"]);
+            queryclient.invalidateQueries(["stats"]);
             //toastContext.showSuccessMessage(translate("newTime.saveSuccess"));
             notifications.show({
                 withCloseButton: true,
