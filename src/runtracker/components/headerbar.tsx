@@ -1,30 +1,40 @@
-import {ActionIcon, Flex, Text, useMantineColorScheme} from "@mantine/core";
-import {useMediaQuery} from "@mantine/hooks";
-import {IconChevronLeft, IconMoonStars, IconSun} from "@tabler/icons-react";
-import {useMatch, useNavigate} from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Moon, Sun, ChevronLeft } from "lucide-react";
+import { useMatch, useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@mantine/hooks"; // Keep for now or replace with custom hook
 
-export function HeaderBar() {
+interface HeaderBarProps {
+    toggleColorScheme: () => void;
+    colorScheme: "light" | "dark";
+}
+
+export function HeaderBar({ toggleColorScheme, colorScheme }: HeaderBarProps) {
     const match = useMatch("tracks/:trackId");
-    const {colorScheme, toggleColorScheme} = useMantineColorScheme();
     const dark = colorScheme === "dark";
     const navigate = useNavigate();
     const handleOnClick = () => navigate("");
-    const isMobile = useMediaQuery('(max-width: 48em)');
+    const isMobile = useMediaQuery('(max-width: 768px)'); // Adjusted breakpoint to match Tailwind md
     const shouldRenderBackButton = isMobile && Boolean(match);
+
     return (
-        <Flex gap="md" justify="space-between" align="center" direction="row" wrap="nowrap">
-            {shouldRenderBackButton && <ActionIcon color="blue" size="lg" variant="transparent" onClick={handleOnClick}>
-                <IconChevronLeft size="1.1rem"/>
-            </ActionIcon>}
-            <Text>Run tracker</Text>
-            <ActionIcon
+        <div className="flex w-full justify-between items-center">
+            <div className="flex items-center gap-2">
+                {shouldRenderBackButton && (
+                    <Button variant="ghost" size="icon" onClick={handleOnClick}>
+                        <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                )}
+                <span className="font-semibold text-lg">Run tracker</span>
+            </div>
+
+            <Button
                 variant="outline"
-                color={dark ? "yellow" : "blue"}
-                onClick={() => toggleColorScheme()}
+                size="icon"
+                onClick={toggleColorScheme}
                 title="Toggle color scheme"
             >
-                {dark ? <IconSun size="1.1rem"/> : <IconMoonStars size="1.1rem"/>}
-            </ActionIcon>
-        </Flex>
+                {dark ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+            </Button>
+        </div>
     );
 }

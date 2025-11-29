@@ -1,7 +1,7 @@
 import React from "react";
-import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
-import {Bar} from "react-chartjs-2";
-import {translate} from "react-i18nify";
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { translate } from "react-i18nify";
 import { TrackStatsProps } from "./trackstats";
 import "./bargraph.css";
 
@@ -27,7 +27,7 @@ const BarGraph: React.FC<BarGraphProps> = (props) => {
     };
 
     const labels = props.data.map((item) => {
-        if(item.name.length > 20) {
+        if (item.name.length > 20) {
             return item.name.substring(0, 20) + "...";
         }
         return item.name;
@@ -49,8 +49,8 @@ const BarGraph: React.FC<BarGraphProps> = (props) => {
     };
 
     return (
-        <div className="chart-container">
-            <Bar data={data} options={options} className="stats-graph"/>
+        <div className="relative h-[400px] w-full">
+            <Bar data={data} options={options} className="w-full h-full" />
         </div>)
 };
 

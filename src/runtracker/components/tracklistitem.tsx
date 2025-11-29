@@ -1,11 +1,10 @@
-import {Card, Flex, Grid, Space, Text, ThemeIcon, Title, useMantineTheme} from "@mantine/core";
-import {TrackSummary} from "../domain/tracksummary";
+import { Card } from "@/components/ui/card";
+import { TrackSummary } from "../domain/tracksummary";
 import timeUtils from "../utils/timeutils";
-import "./tracklist.css";
-import {IconArrowDownRight, IconArrowUpRight, IconCalendar, IconRun, IconTrophy} from "@tabler/icons-react";
-import {useRunTrackerStore} from "../../App";
-import {useNavigate} from "react-router-dom";
-import "./tracklistitem.css";
+import { IconArrowDownRight, IconArrowUpRight, IconCalendar, IconRun, IconTrophy } from "@tabler/icons-react";
+import { useRunTrackerStore } from "../../App";
+import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 interface TimeRefDecoratorProps {
     track: TrackSummary;
@@ -17,29 +16,33 @@ const TimeRefDecorator: React.FC<TimeRefDecoratorProps> = (props) => {
     }
     const diferencia = props.track.latestToBestTimespan;
     const DiffIcon = diferencia < 0 ? IconArrowUpRight : IconArrowDownRight;
+    const isPositive = diferencia < 0; // Negative difference means faster (better)
+
     return (
-        <Flex justify="flex-start" align="flex-start" direction="column" wrap="wrap" gap={'xs'}>
-            <ThemeIcon
-                color="gray"
-                variant="light"
-                sx={(theme) => ({color: diferencia < 0 ? theme.colors.teal[6] : theme.colors.red[6]})}
-                size={28}
-                radius="md"
-            >
-                <DiffIcon size="1.25rem" stroke={1.25}/>
-            </ThemeIcon>
-            <Text fz="sm">{`${diferencia > 0 ? "+" : ""}${diferencia}s`}</Text>
-        </Flex>
+        <div className="flex flex-col items-start gap-1">
+            <div className={cn(
+                "p-1 rounded-md",
+                isPositive ? "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400" : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+            )}>
+                <DiffIcon size="1.25rem" stroke={1.25} />
+            </div>
+            <span className="text-sm">{`${diferencia > 0 ? "+" : ""}${diferencia}s`}</span>
+        </div>
     );
 };
 
 function CardElement(props: { icon: React.ReactNode, text: string, active: boolean }) {
-    return <Flex direction="row" gap={2} align="">
-        {props.icon}
-        <Text c={props.active ? "gray.0" : "dimmed"}>
-            {props.text}
-        </Text>
-    </Flex>
+    return (
+        <div className="flex items-center gap-2">
+            {props.icon}
+            <span className={cn(
+                "text-sm",
+                props.active ? "text-primary-foreground/90" : "text-muted-foreground"
+            )}>
+                {props.text}
+            </span>
+        </div>
+    );
 }
 
 interface TrackListItemProps {
@@ -47,12 +50,12 @@ interface TrackListItemProps {
     navigation: boolean | undefined;
 }
 
-export const TrackListItem: React.FC<TrackListItemProps> = ({track}) => {
-    const theme = useMantineTheme();
+export const TrackListItem: React.FC<TrackListItemProps> = ({ track }) => {
     const selectedTrack = useRunTrackerStore((state) => state.selectedTrack);
     const navigate = useNavigate();
     const handleOnClick = () => navigate(`/tracks/${track.id}`);
     const active = track.id === selectedTrack;
+
     const prepareDistanceText = (path: TrackSummary): string => {
         return ` ${path.distanceInKms()} kms`;
     }
@@ -71,26 +74,40 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({track}) => {
     };
 
     return (
-        <Card withBorder key={track.id} mt={"xs"} onClick={handleOnClick}
-              sx={(theme) => ({backgroundColor: active ? theme.colors.blue[5] : ''})} className="track-card">
-            <Grid gutter="0" justify="space-around">
-                <Grid.Col span={11}>
-                    <Title order={active ? 5 : 6}>{track.name}</Title>
-                    <Space h={"xs"}/>
-                    <Flex justify="flex-start" align="center" direction="row" wrap="wrap" gap={"xs"} rowGap="xs">
-                        <CardElement icon={<IconRun size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.orange[7]}/>}
-                                     text={prepareDistanceText(track)} active={active}/>
-                        <CardElement icon={<IconTrophy size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.yellow[4]}/>}
-                                     text={prepareTimeText(track)} active={active}/>
-                        <CardElement icon={<IconCalendar size="1.4rem" stroke={1.4} color={active ? theme.colors.gray[0] : theme.colors.red[9]}/>}
-                                     text={prepareDateText(track)} active={active}/>
-                    </Flex>
-                </Grid.Col>
-                <Space h={"xs"}/>
-                <Grid.Col span={1}>
-                    <TimeRefDecorator track={track}/>
-                </Grid.Col>
-            </Grid>
+        <Card
+            className={cn(
+                "mt-2 cursor-pointer transition-colors hover:bg-accent/50",
+                active ? "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-900 dark:hover:bg-blue-800" : ""
+            )}
+            onClick={handleOnClick}
+        >
+            <div className="p-3 grid grid-cols-12 gap-2">
+                <div className="col-span-11">
+                    <h3 className={cn("font-semibold text-base mb-2", active ? "text-white" : "")}>
+                        {track.name}
+                    </h3>
+                    <div className="flex flex-wrap gap-3 items-center">
+                        <CardElement
+                            icon={<IconRun size="1.4rem" stroke={1.4} color={active ? "white" : "orange"} />}
+                            text={prepareDistanceText(track)}
+                            active={active}
+                        />
+                        <CardElement
+                            icon={<IconTrophy size="1.4rem" stroke={1.4} color={active ? "white" : "#fbbf24"} />} // yellow-400
+                            text={prepareTimeText(track)}
+                            active={active}
+                        />
+                        <CardElement
+                            icon={<IconCalendar size="1.4rem" stroke={1.4} color={active ? "white" : "#ef4444"} />} // red-500
+                            text={prepareDateText(track)}
+                            active={active}
+                        />
+                    </div>
+                </div>
+                <div className="col-span-1 flex justify-center">
+                    <TimeRefDecorator track={track} />
+                </div>
+            </div>
         </Card>
     );
 };

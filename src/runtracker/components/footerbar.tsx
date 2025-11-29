@@ -1,7 +1,6 @@
-import {Flex} from "@mantine/core";
-import {FooterIcon} from "./footericon";
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { FooterIcon } from "./footericon";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./footerbar.css";
 
 export function FooterBar() {
@@ -12,9 +11,9 @@ export function FooterBar() {
         navigate(targetPath);
     }
     return (
-        <Flex gap="xl" justify="space-around" align="center" direction="row" wrap="nowrap" className="footer-bar">
-            <FooterIcon variant={mainSection === "run" ? "light" : "transparent"} onClick={onClickFactory("run", "")} type="run"/>
-            <FooterIcon variant={mainSection === "charts" ? "light" : "transparent"} onClick={onClickFactory("charts", "/charts")} type="chart"/>
-        </Flex>
+        <div className="flex justify-around items-center w-full h-full footer-bar">
+            <FooterIcon variant={mainSection === "run" ? "light" : "transparent"} onClick={onClickFactory("run", "")} type="run" />
+            <FooterIcon variant={mainSection === "charts" ? "light" : "transparent"} onClick={onClickFactory("charts", "/charts")} type="chart" />
+        </div>
     );
 }

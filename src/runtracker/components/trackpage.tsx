@@ -1,21 +1,25 @@
-import {Button, Container, createStyles, Group, LoadingOverlay, MediaQuery, Modal, Paper, ScrollArea, Space, Tabs, TextInput,} from "@mantine/core";
-import {Time, TimeProps} from "../domain/time";
-import {Track, TrackProps} from "../domain/track";
-import {TrackCard} from "./trackcard";
-import {useDisclosure} from "@mantine/hooks";
-import {IconCalendar, IconCircle0Filled, IconClock, IconMessageCircle, IconPhoto, IconX} from "@tabler/icons-react";
-import {translate} from "react-i18nify";
-import {TrackSummary} from "../domain/tracksummary";
-import {pathService} from "../domain/trackservice";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {useParams} from "react-router-dom";
-
-import {useForm} from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Time, TimeProps } from "../domain/time";
+import { Track, TrackProps } from "../domain/track";
+import { TrackCard } from "./trackcard";
+import { IconCalendar, IconClock, IconMessageCircle, IconPhoto } from "@tabler/icons-react";
+import { translate } from "react-i18nify";
+import { TrackSummary } from "../domain/tracksummary";
+import { pathService } from "../domain/trackservice";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import "./trackpage.css";
 import timeService from "../domain/timeservice";
-import {TimeList} from "./timeList";
+import { TimeList } from "./timeList";
 import TrackTimesGraph from "./tracktimesgraph";
-import {notifications} from "@mantine/notifications";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type NewTimeFormValues = {
     trainingDate: string;
@@ -27,64 +31,41 @@ export interface TrackPageProps {
 }
 
 export function TrackPage(props: TrackPageProps) {
-    const [opened, {open, close}] = useDisclosure(false);
-    const [visible, {open: showOverlay, close: hideOverlay}] = useDisclosure(false);
-    const {trackId} = useParams();
-    const {isLoading, data} = useQuery(["track", trackId], () => pathService.findById(trackId || ""));
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLoadingOverlay, setIsLoadingOverlay] = useState(false);
+    const { trackId } = useParams();
+    const { isLoading, data } = useQuery(["track", trackId], () => pathService.findById(trackId || ""));
 
     const queryclient = useQueryClient();
-    const {mutate} = useMutation((newTime: TimeProps) => timeService.createTime(trackId || "", newTime), {
+    const { mutate } = useMutation((newTime: TimeProps) => timeService.createTime(trackId || "", newTime), {
         onSuccess: (savedTime) => {
             const currentPath: Track = queryclient.getQueryData(["track", trackId]) as Track;
-            currentPath.times?.push(Time.of(savedTime));
-            queryclient.setQueryData(["track", trackId], {...currentPath});
+            if (currentPath) {
+                currentPath.times?.push(Time.of(savedTime));
+                queryclient.setQueryData(["track", trackId], { ...currentPath });
+            }
             queryclient.invalidateQueries(["paths"]);
             queryclient.invalidateQueries(["stats"]);
-            //toastContext.showSuccessMessage(translate("newTime.saveSuccess"));
-            notifications.show({
-                withCloseButton: true,
-                autoClose: 5000,
-                title: translate("application.title"),
-                message: translate("newTime.saveSuccess"),
-                color: 'green',
-                icon: <IconCircle0Filled/>,
 
-                loading: false,
-            });
-            hideOverlay();
-            close();
+            toast.success(translate("newTime.saveSuccess") || "Time saved successfully");
+
+            setIsLoadingOverlay(false);
+            setIsDialogOpen(false);
         },
         onError: () => {
-            hideOverlay();
-            notifications.show({
-                withCloseButton: true,
-                autoClose: 5000,
-                title: translate("application.title"),
-                message: translate("newTime.saveError"),
-                color: 'red',
-                icon: <IconX/>,
-
-                loading: false,
-            });
-            close();
+            setIsLoadingOverlay(false);
+            toast.error(translate("newTime.saveError") || "Error saving time");
         },
     });
+
     const currentDateISO = new Date().toISOString().split('T')[0];
     const {
         register,
-        formState: {errors, isDirty, isValid},
+        formState: { errors, isDirty, isValid },
         handleSubmit,
         setValue,
         trigger,
-    } = useForm<NewTimeFormValues>({mode: "onBlur", defaultValues: {trainingDate: currentDateISO, durationString: ""}});
-    const useStyles = createStyles((theme) => ({
-        card: {
-            position: "relative",
-            overflow: "visible",
-            padding: theme.spacing.xl,
-        },
-    }));
-    const {classes} = useStyles();
+    } = useForm<NewTimeFormValues>({ mode: "onBlur", defaultValues: { trainingDate: currentDateISO, durationString: "" } });
 
     const calculateDuration = (duration: string): number => {
         const durationComponents = duration.split(":");
@@ -92,13 +73,14 @@ export function TrackPage(props: TrackPageProps) {
     };
 
     const onSubmit = handleSubmit((form: NewTimeFormValues) => {
-        showOverlay();
+        setIsLoadingOverlay(true);
         const adaptedForm = {
             trainingDate: new Date(form.trainingDate),
             duration: calculateDuration(form.durationString),
         };
         mutate(adaptedForm);
     });
+
     const handleChange = (e: any) => {
         e.persist();
         setValue(e.target.name, e.target.value);
@@ -111,97 +93,123 @@ export function TrackPage(props: TrackPageProps) {
     const track = new Track(data as TrackProps);
 
     return (
-        <>
-            <ScrollArea className="track-page">
-                <Container fluid>
-                    <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={open}/>
-                </Container>
-                <Space h="lg"/>
-                <MediaQuery smallerThan="md" styles={{display: "none"}}>
-                    <Container fluid>
-                        <Paper radius="lg" withBorder className={classes.card} p={"1.1rem"}>
-                            <TimeList times={track.times || []} distance={track.distance}/>
-                        </Paper>
-                        <Space h="lg"/>
-                        <Paper radius="md" withBorder className={classes.card}>
-                            <TrackTimesGraph times={track.times || []}/>
-                        </Paper>
-                    </Container>
-                </MediaQuery>
-                <MediaQuery largerThan="sm" styles={{display: "none"}}>
-                    <Container fluid>
-                        <Paper radius="md" withBorder className={classes.card}>
-                            <Tabs defaultValue="times">
-                                <Tabs.List>
-                                    <Tabs.Tab value="times" icon={<IconPhoto size="1.1rem"/>}>
-                                        {translate("labels.times")}
-                                    </Tabs.Tab>
-                                    <Tabs.Tab value="graph" icon={<IconMessageCircle size="1.1rem"/>}>
-                                        {translate("labels.graph")}
-                                    </Tabs.Tab>
-                                </Tabs.List>
+        <div className="h-full overflow-auto p-4 track-page">
+            <div className="container mx-auto max-w-4xl">
+                <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={() => setIsDialogOpen(true)} />
 
-                                <Tabs.Panel value="times" pt="xs">
-                                    <TimeList times={track.times || []} distance={track.distance}/>
-                                </Tabs.Panel>
+                <div className="h-8" />
 
-                                <Tabs.Panel value="graph" pt="xs">
-                                    <TrackTimesGraph times={track.times || []}/>
-                                </Tabs.Panel>
-                            </Tabs>
-                        </Paper>
-                    </Container>
-                </MediaQuery>
-            </ScrollArea>
-            <Modal opened={opened} onClose={close} size="md" title={translate("newTime.title")} centered>
-                <form onSubmit={onSubmit}>
-                    <LoadingOverlay visible={visible} overlayBlur={2}/>
-                    <TextInput
-                        label={translate("newTime.trainingDate")}
-                        placeholder="Fecha del entrenamiento"
-                        icon={<IconCalendar size="0.8rem"/>}
-                        type="date"
-                        {...register("trainingDate", {required: true, onBlur: handleChange})}
-                        aria-invalid={errors.trainingDate ? "true" : "false"}
-                        withAsterisk
-                    />
-                    {errors.trainingDate?.type === "required" && (
-                        <small className="form-error" role="alert">
-                            {translate("validation.mandatory")}
-                        </small>
+                {/* Desktop View */}
+                <div className="hidden md:block">
+                    <Card className="p-6">
+                        <TimeList times={track.times || []} distance={track.distance} />
+                    </Card>
+                    <div className="h-8" />
+                    <Card className="p-4">
+                        <TrackTimesGraph times={track.times || []} />
+                    </Card>
+                </div>
+
+                {/* Mobile View */}
+                <div className="md:hidden">
+                    <Card>
+                        <Tabs defaultValue="times" className="w-full">
+                            <TabsList className="w-full grid grid-cols-2">
+                                <TabsTrigger value="times" className="gap-2">
+                                    <IconPhoto size="1.1rem" />
+                                    {translate("labels.times")}
+                                </TabsTrigger>
+                                <TabsTrigger value="graph" className="gap-2">
+                                    <IconMessageCircle size="1.1rem" />
+                                    {translate("labels.graph")}
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="times" className="p-4">
+                                <TimeList times={track.times || []} distance={track.distance} />
+                            </TabsContent>
+
+                            <TabsContent value="graph" className="p-4">
+                                <TrackTimesGraph times={track.times || []} />
+                            </TabsContent>
+                        </Tabs>
+                    </Card>
+                </div>
+            </div>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>{translate("newTime.title")}</DialogTitle>
+                    </DialogHeader>
+
+                    {isLoadingOverlay && (
+                        <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-50">
+                            <span>Saving...</span>
+                        </div>
                     )}
 
-                    <Space h="sm"/>
-                    <TextInput
-                        label={translate("newTime.durationString")}
-                        placeholder="mm:ss"
-                        icon={<IconClock size="0.8rem"/>}
-                        {...register("durationString", {
-                            required: true,
-                            pattern: /^[0-9]?\d:[0-5]\d$/i,
-                            onBlur: handleChange,
-                        })}
-                        aria-invalid={errors.durationString ? "true" : "false"}
-                        withAsterisk
-                    />
-                    {errors.durationString?.type === "required" && (
-                        <small className="form-error" role="alert">
-                            {translate("validation.mandatory")}
-                        </small>
-                    )}
-                    {errors.durationString?.type === "pattern" && (
-                        <small className="form-error" role="alert">
-                            {translate("validation.timeFormat")}
-                        </small>
-                    )}
-                    <Space h="lg"/>
-                    <Group position="right">
-                        <Button type="submit" disabled={!isDirty || !isValid}>
-                            {translate("actions.save")}
-                        </Button>
-                    </Group>
-                </form>
-            </Modal>
-        </>
+                    <form onSubmit={onSubmit} className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="trainingDate" className="flex items-center gap-1">
+                                {translate("newTime.trainingDate")} <span className="text-destructive">*</span>
+                            </Label>
+                            <div className="relative">
+                                <IconCalendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    id="trainingDate"
+                                    type="date"
+                                    className="pl-9"
+                                    placeholder="Fecha del entrenamiento"
+                                    {...register("trainingDate", { required: true, onBlur: handleChange })}
+                                    aria-invalid={errors.trainingDate ? "true" : "false"}
+                                />
+                            </div>
+                            {errors.trainingDate?.type === "required" && (
+                                <small className="text-destructive text-xs">
+                                    {translate("validation.mandatory")}
+                                </small>
+                            )}
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="durationString" className="flex items-center gap-1">
+                                {translate("newTime.durationString")} <span className="text-destructive">*</span>
+                            </Label>
+                            <div className="relative">
+                                <IconClock className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    id="durationString"
+                                    placeholder="mm:ss"
+                                    className="pl-9"
+                                    {...register("durationString", {
+                                        required: true,
+                                        pattern: /^[0-9]?\d:[0-5]\d$/i,
+                                        onBlur: handleChange,
+                                    })}
+                                    aria-invalid={errors.durationString ? "true" : "false"}
+                                />
+                            </div>
+                            {errors.durationString?.type === "required" && (
+                                <small className="text-destructive text-xs">
+                                    {translate("validation.mandatory")}
+                                </small>
+                            )}
+                            {errors.durationString?.type === "pattern" && (
+                                <small className="text-destructive text-xs">
+                                    {translate("validation.timeFormat")}
+                                </small>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end mt-4">
+                            <Button type="submit" disabled={!isDirty || !isValid}>
+                                {translate("actions.save")}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 }
