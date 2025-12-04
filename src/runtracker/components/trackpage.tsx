@@ -94,7 +94,7 @@ export function TrackPage(props: TrackPageProps) {
 
     return (
         <div className="h-full overflow-auto p-4 track-page">
-            <div className="container mx-auto max-w-4xl">
+            <div className="container mx-auto max-w-7xl">
                 <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={() => setIsDialogOpen(true)} />
 
                 <div className="h-8" />
@@ -138,7 +138,7 @@ export function TrackPage(props: TrackPageProps) {
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="w-[90%] rounded-lg sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>{translate("newTime.title")}</DialogTitle>
                     </DialogHeader>
