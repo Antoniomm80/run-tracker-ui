@@ -1,17 +1,17 @@
-import {ActionIcon} from "@mantine/core";
-import {IconChartBar, IconRun} from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { BarChart, Activity } from "lucide-react";
 
 type FooterIconProps = {
     onClick: () => void;
-    variant: string;
+    variant: "default" | "ghost" | "secondary";
     type: "run" | "chart";
 }
 
 export function FooterIcon(props: FooterIconProps) {
     return (
-        <ActionIcon color="blue" size="xl" variant={props.variant} onClick={props.onClick}>
-            {props.type === "run" && <IconRun size="2rem" stroke="1.5"/>}
-            {props.type === "chart" && <IconChartBar size="2rem" stroke="1.5"/>}
-        </ActionIcon>
+        <Button size="icon" variant={props.variant} onClick={props.onClick} className="h-12 w-12 rounded-full">
+            {props.type === "run" && <Activity className="h-8 w-8" />}
+            {props.type === "chart" && <BarChart className="h-8 w-8" />}
+        </Button>
     );
 }

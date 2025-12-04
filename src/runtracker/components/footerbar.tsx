@@ -1,7 +1,6 @@
 import { FooterIcon } from "./footericon";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./footerbar.css";
 
 export function FooterBar() {
     const [mainSection, setMainSection] = useState<string>("run");
@@ -11,9 +10,9 @@ export function FooterBar() {
         navigate(targetPath);
     }
     return (
-        <div className="flex justify-around items-center w-full h-full footer-bar">
-            <FooterIcon variant={mainSection === "run" ? "light" : "transparent"} onClick={onClickFactory("run", "")} type="run" />
-            <FooterIcon variant={mainSection === "charts" ? "light" : "transparent"} onClick={onClickFactory("charts", "/charts")} type="chart" />
+        <div className="flex justify-around items-center w-full h-full my-2">
+            <FooterIcon variant={mainSection === "run" ? "secondary" : "ghost"} onClick={onClickFactory("run", "")} type="run" />
+            <FooterIcon variant={mainSection === "charts" ? "secondary" : "ghost"} onClick={onClickFactory("charts", "/charts")} type="chart" />
         </div>
     );
 }

@@ -117,7 +117,7 @@ export default function RunTrackerAppShell({ toggleColorScheme, colorScheme }: R
                 </aside>
 
                 {/* Main Content */}
-                <main id="detail" className="flex-1 overflow-auto p-4 relative">
+                <main id="detail" className="flex-1 overflow-auto p-2 md:p-4 relative">
                     <Outlet />
                 </main>
             </div>
