@@ -93,8 +93,8 @@ export function TrackPage(props: TrackPageProps) {
     const track = new Track(data as TrackProps);
 
     return (
-        <div className="h-full overflow-auto p-4 track-page">
-            <div className="container mx-auto max-w-7xl">
+        <div className="h-full overflow-auto track-page">
+            <div className="container">
                 <TrackCard bestTime={props.trackSummary?.bestTime} track={track} open={() => setIsDialogOpen(true)} />
 
                 <div className="h-8" />
