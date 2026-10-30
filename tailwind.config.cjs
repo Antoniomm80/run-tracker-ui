@@ -16,7 +16,26 @@ module.exports = {
             },
         },
         extend: {
+            fontFamily: {
+                sans: ["Inter", "system-ui", "sans-serif"],
+                display: ["Archivo", "Inter", "system-ui", "sans-serif"],
+            },
             colors: {
+                brand: {
+                    DEFAULT: "hsl(var(--brand) / <alpha-value>)",
+                    foreground: "hsl(var(--brand-foreground))",
+                },
+                "brand-soft": "hsl(var(--brand-soft))",
+                bar: "hsl(var(--bar) / <alpha-value>)",
+                hero: {
+                    DEFAULT: "hsl(var(--hero))",
+                    foreground: "hsl(var(--hero-foreground))",
+                    record: "hsl(var(--hero-record))",
+                    muted: "hsl(var(--hero-muted))",
+                    chip: "hsl(var(--hero-chip))",
+                },
+                success: "hsl(var(--success) / <alpha-value>)",
+                warning: "hsl(var(--warning) / <alpha-value>)",
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
